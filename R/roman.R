@@ -100,7 +100,7 @@ roman_digit_to_number <- function(rd){
 #'
 #' @param roman Roman numeral (character string)
 #'
-#' @return corresponding decmal number
+#' @return corresponding decimal number
 #' @export
 #'
 #' @examples
