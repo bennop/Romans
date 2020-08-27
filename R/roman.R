@@ -109,10 +109,14 @@ roman_to_decimal <- function(roman){
     n <- nchar(roman)
     digit_values <- numeric(n)
     digits <- strsplit(roman, '')[[1]]
+    # convert all characters to their decimal value
     for (i in seq_along(digits)){
         digit_values[i] <- roman_digit_to_number(digits[i])
     }
+    # find those that are not in descending sorting order ....
     neg_digits <- c(digit_values[-1],0) > digit_values
+    # ... and negate them
     digit_values[neg_digits] <- -digit_values[neg_digits]
+    # then simply sum
     return(sum(digit_values))
 }
