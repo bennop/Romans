@@ -3,19 +3,19 @@
 ROMANS <- matrix(c('I', 'V', 'X', 'L', 'C', 'D', 'M', NA),
                  nrow = 2)
 
-#' Convert number to roman numeral
+#' Convert number to Roman numeral
 #'
 #' It is assumed that \code{number} is an integer value
 #' @param number integer (any fractional part is truncated)
 #'
-#' @return roman numeral corresponding to \code{number} (or error when out of range)
+#' @return Roman numeral corresponding to \code{number} (or error when out of range)
 #' @export
 #'
 #' @examples
 #' to_roman(1964)
 to_roman <- function(number){
     if(!in_roman_range(number)){
-        stop(number, " cannot be expressed in roman numerals")
+        stop(number, " cannot be expressed in Roman numerals")
     }
     digits <- num_to_digits(floor(number))
     roman <- ''
@@ -43,7 +43,7 @@ to_roman <- function(number){
     return(roman)
 }
 
-#' check whether number is in range for roman numerals
+#' check whether number is in range for Roman numerals
 #'
 #' @param number integer (not checked)
 #'
@@ -60,7 +60,7 @@ in_roman_range <- function(number){
 #'
 #' @param number integer (not checked)
 #'
-#' @return
+#' @return digit vector
 #' @export
 #'
 #' @examples
@@ -73,4 +73,46 @@ num_to_digits <- function(number){
         number <- number %/% 10
     }
     return(digits)
+}
+
+
+#' convert single-character Roman numeral to number
+#'
+#' If \code{rd} is not just a single character, only the first character is
+#' considered.
+#'
+#' @param rd single character
+#'
+#' @return decimal value corresponding to Roman number \code{rd} (or error)
+#' @export
+#'
+#' @examples
+#' roman_digit_to_number('M')
+roman_digit_to_number <- function(rd){
+    r_indices <- which(ROMANS == toupper(substr(rd,1,1)), arr.ind = TRUE)
+    if(length(r_indices)==0){
+        stop('"', rd, '" is not a valid Roman numeral')
+    }
+    return(c(1,5)[r_indices[1]]*10^(r_indices[2]-1))
+}
+
+#' Convert Roman numeral to its decimal equivalent
+#'
+#' @param roman Roman numeral (character string)
+#'
+#' @return corresponding decmal number
+#' @export
+#'
+#' @examples
+#' roman_to_decimal('MMXX')
+roman_to_decimal <- function(roman){
+    n <- nchar(roman)
+    digit_values <- numeric(n)
+    digits <- strsplit(roman, '')[[1]]
+    for (i in seq_along(digits)){
+        digit_values[i] <- roman_digit_to_number(digits[i])
+    }
+    neg_digits <- c(digit_values[-1],0) > digit_values
+    digit_values[neg_digits] <- -digit_values[neg_digits]
+    return(sum(digit_values))
 }
